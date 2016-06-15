@@ -1,0 +1,14 @@
+﻿Build started 2/21/2014 8:32:01 AM.
+     1>Project "C:\Users\Alan\Documents\Visual Studio 2010\Kinect_OpenCV_FingerDetectionBeta\Kinect_OpenCV_FingerDetectionBeta\Kinect_OpenCV_FingerDetectionBeta.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Debug\Kinect_OpenCV_FingerDetectionBeta.unsuccessfulbuild".
+       ClCompile:
+         All outputs are up-to-date.
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Kinect_OpenCV_FingerDetectionBeta.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt FingerDetectionBuild3Demo.cpp
+         FingerDetectionBuild3Demo.cpp
+     1>c:\users\alan\documents\visual studio 2010\kinect_opencv_fingerdetectionbeta\kinect_opencv_fingerdetectionbeta\fingerdetectionbuild3demo.cpp(10): fatal error C1083: Cannot open include file: 'opencv2/opencv.hpp': No such file or directory
+     1>Done Building Project "C:\Users\Alan\Documents\Visual Studio 2010\Kinect_OpenCV_FingerDetectionBeta\Kinect_OpenCV_FingerDetectionBeta\Kinect_OpenCV_FingerDetectionBeta.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.60
