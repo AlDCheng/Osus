@@ -1,6 +1,7 @@
 //Adaptation from Japanese sample code
 
 #include "opencv2/opencv.hpp"
+#include <math.h>
 #include <Windows.h>
 #include <Kinect.h>
 
@@ -92,8 +93,6 @@ void BackgroundSubtration(cv::Mat sourceBackground, cv::Mat sourceDepth, cv::Mat
 	int depthHeight = depthSize.height;
 	int depthWidth = depthSize.width;
 
-	int depthVal;
-
 	for (int j = 0; j < depthHeight; ++j)
 	{
 		for (int i = 0; i < depthWidth; ++i)
@@ -126,11 +125,11 @@ int main()
 	cv::Mat colorMat(cHeight / 2, cWidth / 2, CV_8UC4);
 
 	//-------------------------[Depth Initialization]--------------------------
-	int width = 0;
-	int height = 0;
-	pDescription->get_Width(&width); // 512
-	pDescription->get_Height(&height); // 424
-	unsigned int bufferSize = width * height * sizeof(unsigned short);
+	int dWidth = 0;
+	int dHeight = 0;
+	pDescription->get_Width(&dWidth); // 512
+	pDescription->get_Height(&dHeight); // 424
+	unsigned int bufferSize = dWidth * dHeight * sizeof(unsigned short);
 
 	// Range ( Range of Depth is 500-8000[mm], Range of Detection is 500-4500[mm] ) 
 	unsigned short min = 0;
@@ -139,10 +138,12 @@ int main()
 	pDepthSource->get_DepthMaxReliableDistance(&max); // 4500
 	std::cout << "Range : " << min << " - " << max << std::endl;
 
-	cv::Mat backgroundMat(height, width, CV_16UC1);
-	cv::Mat bufferMat(height, width, CV_16UC1);
-	cv::Mat binaryMat(height, width, CV_8UC1);
-	cv::Mat depthMat(height, width, CV_8UC1);
+	//-------------------------------------------------------------------------
+	
+	cv::Mat backgroundMat(dHeight, dWidth, CV_16UC1);
+	cv::Mat bufferMat(dHeight, dWidth, CV_16UC1);
+	cv::Mat binaryMat(dHeight, dWidth, CV_8UC1);
+	cv::Mat depthMat(dHeight, dWidth, CV_8UC1);
 
 	//-------------------------------------------------------------------------
 
@@ -152,6 +153,9 @@ int main()
 	IColorFrame* pColorFrame = nullptr;
 	IDepthFrame* pDepthFrame = nullptr;
 
+	UINT16* backBuffer = nullptr;
+	cv::Mat backFrame(dHeight, dWidth, CV_16UC1);
+
 	//-------------------------------[Get Background Loop]-----------------------------------
 	while (1) {
 		// Frame
@@ -159,18 +163,30 @@ int main()
 		pDepthFrame = nullptr;
 
 		hResult = pColorReader->AcquireLatestFrame(&pColorFrame);
-		if (SUCCEEDED(hResult)){
+		if (SUCCEEDED(hResult))
+		{
 			hResult = pColorFrame->CopyConvertedFrameDataToArray(colorBufferSize, reinterpret_cast<BYTE*>(colorBufferMat.data), ColorImageFormat::ColorImageFormat_Bgra);
-			if (SUCCEEDED(hResult)){
+			if (SUCCEEDED(hResult))
+			{
 				cv::resize(colorBufferMat, colorMat, cv::Size(), 0.5, 0.5);
 			}
 		}
 		
 		hResult = pDepthReader->AcquireLatestFrame(&pDepthFrame);
-		if (SUCCEEDED(hResult)) {
-			hResult = pDepthFrame->AccessUnderlyingBuffer(&bufferSize, reinterpret_cast<UINT16**>(&backgroundMat.data));
-			if (SUCCEEDED(hResult)) {
-				backgroundMat.convertTo(depthMat, CV_8U, -255.0f / 8000.0f, 255.0f);
+		if (SUCCEEDED(hResult))
+		{
+			hResult = pDepthFrame->AccessUnderlyingBuffer(&bufferSize, reinterpret_cast<UINT16**>(&bufferMat.data));
+			if (SUCCEEDED(hResult))
+			{
+				pDepthFrame->AccessUnderlyingBuffer(&bufferSize, &backBuffer);
+				for (int i = 0; i < dHeight; i++)
+				{
+					for (int j = 0; j < dWidth; j++)
+					{	
+						backFrame.at<UINT16>(i, j) = backBuffer[i * dWidth + j];
+					}
+				}
+				bufferMat.convertTo(depthMat, CV_8U, -255.0f / 8000.0f, 255.0f);
 			}
 		}
 		
@@ -198,20 +214,44 @@ int main()
 		pColorFrame = nullptr;
 		pDepthFrame = nullptr;
 
+		IFrameDescription* depthFrameDescription = nullptr;
+
 		hResult = pColorReader->AcquireLatestFrame(&pColorFrame);
-		if (SUCCEEDED(hResult)){
+		if (SUCCEEDED(hResult))
+		{
 			hResult = pColorFrame->CopyConvertedFrameDataToArray(colorBufferSize, reinterpret_cast<BYTE*>(colorBufferMat.data), ColorImageFormat::ColorImageFormat_Bgra);
-			if (SUCCEEDED(hResult)){
+			if (SUCCEEDED(hResult))
+			{
 				cv::resize(colorBufferMat, colorMat, cv::Size(), 0.5, 0.5);
 			}
 		}
 
+		cv::Mat img(dHeight, dWidth, CV_8UC1);
+
 		hResult = pDepthReader->AcquireLatestFrame(&pDepthFrame);
 		if (SUCCEEDED(hResult)) {
-			hResult = pDepthFrame->AccessUnderlyingBuffer(&bufferSize, reinterpret_cast<UINT16**>(&bufferMat.data));
-			if (SUCCEEDED(hResult)) {
+
+			UINT16* buffer = nullptr;
+			hResult = pDepthFrame->AccessUnderlyingBuffer(&bufferSize, reinterpret_cast<UINT16**>(&buffer));
+			if (SUCCEEDED(hResult))
+			{
+				for (int i = 0; i < dHeight; i++)
+				{
+					for (int j = 0; j < dWidth; j++)
+					{	
+						int curDepthVal = buffer[i * dWidth + j];
+						int backDepthVal = backFrame.at<UINT16>(i, j);
+						if (std::abs(backDepthVal - curDepthVal) < 20)
+							img.at<uchar>(i, j) = 255;
+						else
+							img.at<uchar>(i, j) = 0;
+					}
+				}
+
+				pDepthFrame->AccessUnderlyingBuffer(&bufferSize, reinterpret_cast<UINT16**>(&bufferMat.data));
 				bufferMat.convertTo(depthMat, CV_8U, -255.0f / 8000.0f, 255.0f);
 			}
+			
 		}
 
 		SafeRelease(pColorFrame);
@@ -220,9 +260,10 @@ int main()
 		cv::imshow("Color", colorMat);
 		cv::imshow("Depth", depthMat);
 
-		BackgroundSubtration(backgroundMat, bufferMat, binaryMat);
+//		BackgroundSubtration(backgroundMat, bufferMat, binaryMat);
 
-		cv::imshow("Binary", binaryMat);
+//		cv::imshow("Binary", binaryMat);
+		cv::imshow("Binary", img);
 
 		if (cv::waitKey(30) == VK_ESCAPE) {
 			break;
