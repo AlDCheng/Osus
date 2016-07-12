@@ -87,29 +87,6 @@ inline int KinectInit()
 
 }
 
-void BackgroundSubtration(cv::Mat sourceBackground, cv::Mat sourceDepth, cv::Mat binaryDepth)
-{
-	CvSize depthSize = sourceDepth.size();
-	int depthHeight = depthSize.height;
-	int depthWidth = depthSize.width;
-
-	for (int j = 0; j < depthHeight; ++j)
-	{
-		for (int i = 0; i < depthWidth; ++i)
-		{
-			unsigned short depthVal = sourceDepth.at<unsigned short>(cv::Point(i, j));
-			unsigned short backVal = sourceBackground.at<unsigned short>(cv::Point(i, j));
-			int disparity = (int)backVal - (int)depthVal;
-			//int disparity = (int)sourceBackground.at<UINT16>(i, j) - (int)sourceDepth.at<UINT16>(i, j);
-			if (disparity < 20)
-				binaryDepth.at<uchar>(i, j) = 255;
-			else
-				binaryDepth.at<uchar>(i, j) = 0;
-		}
-	}
-
-}
-
 int main()
 {
 	KinectInit();
