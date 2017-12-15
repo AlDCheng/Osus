@@ -1,8 +1,12 @@
-/*
-Calculates whether a user has pressed or released based on past inputs.
-
-Author: Hope Harrison & Alan Cheng
-*/
+//////////////////////////////////////////////////////////////////////////////////
+// Module Name: gesture_detect
+// Description: Calculates whether a user has pressed or released based on past inputs.
+// 
+// Dependencies:
+// 
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
 module gesture_detect(
         input clock,

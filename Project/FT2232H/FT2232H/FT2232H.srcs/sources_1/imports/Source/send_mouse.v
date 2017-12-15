@@ -1,8 +1,13 @@
-/*
-Assigns the byte to be sent over serial in the correct order for the mouse report.
+//////////////////////////////////////////////////////////////////////////////////
+// Module Name: send_mouse
+// Description: Assigns the byte to be sent over serial in the correct order for the mouse report.
+// 
+// Dependencies:
+// 
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
-Author: Hope Harrison
-*/
 module send_mouse( 
     input [15:0] x, y, // coordinates of mouse
     input [7:0] is_press, is_release, is_move, // type of mouse action

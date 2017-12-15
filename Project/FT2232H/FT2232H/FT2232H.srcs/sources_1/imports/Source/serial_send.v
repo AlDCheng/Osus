@@ -1,14 +1,19 @@
-/*
-Sends the data input over serial on xmit_data.
+//////////////////////////////////////////////////////////////////////////////////
+// Module Name: serial_send
+// Description: Sends the data input over serial on xmit_data.
+// 
+// Dependencies:
+// 
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
-Author: Hope Harrison
-*/
 module serial_send(
      input clk,
      input [7:0] data,       // 8 bit ascii data
      input start_send,       // one clock pulse width, enter pressed, data available
      output reg xmit_data,   // serial data sent to RS232 output driver 
-     output reg xmit_clk,     // baud rate; sent to logic analyzer for debuggin
+     output reg xmit_clk,     // baud rate; sent to logic analyzer for debugging
      output reg xmit_done    // indicates that transmission of 1 byte is finished
      );
 
