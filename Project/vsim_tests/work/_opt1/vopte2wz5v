@@ -1,0 +1,102 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/afs/athena.mit.edu/user/a/d/adcheng
+T_opt
+Z1 VdT`cmb^QdK?[FbPhLHY9h2
+Z2 04 11 4 work FT2232_Data fast 0
+Z3 =1-f44d3044f36a-5a133502-3bd1b-7441
+Z4 o-quiet -auto_acc_if_foreign -work work
+Z5 OE;O;6.4a;39
+T_opt1
+Z6 VcD2QeGf@2=^_0N^<KhoX?3
+Z7 04 14 4 work image_store_tb fast 0
+Z8 =1-f44d3044f36a-5a25d009-99375-68ef
+R4
+R5
+vbackground_mem_control
+Z9 I9Uf<@iHA]c6e02WOnPeLc1
+Z10 VkDAIfTI^NZWnYcM_]?1ib2
+Z11 d/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests
+Z12 w1512423098
+Z13 8/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/FT2232_Data.v
+Z14 F/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/FT2232_Data.v
+Z15 L0 143
+Z16 OE;L;6.4a;39
+r1
+31
+Z17 o-work work -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+Z18 !s100 fdX]Ug3QQfiEQdZ2l78NT1
+!s85 0
+vbram
+Z19 IN43SMPcC3@h51UJ4QXcO01
+Z20 VijG^BOY[S=CCVIUE0U5>R2
+R11
+Z21 w1511926619
+Z22 8/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/mem_modules.v
+Z23 F/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/mem_modules.v
+L0 3
+R16
+r1
+31
+R17
+Z24 !s100 ZC3:=fZg[VFH_>B_LH0^l3
+!s85 0
+vdetect_start
+Z25 IlU=EU4BOPhoTd2PbMzWTa0
+Z26 Vc0W5eDUjUDL4??Q:3SbQ51
+R11
+R12
+R13
+R14
+Z27 L0 256
+R16
+r1
+31
+R17
+Z28 !s100 h:mVJ5mz3nhXnk:SHe0aS0
+!s85 0
+vFT2232_Data
+Z29 I>c]kV5l2bQ1MBNI:1HX321
+Z30 VHM`KW`Q]kLYSMk]WGPKOm0
+R11
+R12
+R13
+R14
+L0 13
+R16
+r1
+31
+R17
+Z31 n@f@t2232_@data
+Z32 !s100 [=?Ojig_NX>RchSLR=Se>1
+!s85 0
+vimage_store_tb
+Z33 I7bBO:k1BH7VXfmcblFn583
+Z34 VCQALmKdPT<Mm=W<j@a14n2
+R11
+Z35 w1512097441
+Z36 8/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/Image_Store_TB.v
+Z37 F/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/Image_Store_TB.v
+L0 3
+R16
+r1
+31
+R17
+Z38 !s100 T2LamHE_a@D4RVXohELTI1
+!s85 0
+vram_control
+Z39 IHz<Bch>Xm:jC8JZI5>o090
+Z40 VBI72[X>dLdz?9M[DLTG053
+R11
+R12
+R13
+R14
+L0 59
+R16
+r1
+31
+R17
+Z41 !s100 V`OJzWl>z=aR@o4[WD3`d0
+!s85 0

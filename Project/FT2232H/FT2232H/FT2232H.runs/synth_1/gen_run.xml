@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-3" LaunchTime="1513029693">
+  <File Type="VDS-TIMING-PB" Name="TP_Top_timing_summary_synth.pb"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="TP_Top_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="TP_Top.dcp"/>
+  <File Type="RDS-UTIL-PB" Name="TP_Top_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="TP_Top_utilization_synth.rpt"/>
+  <File Type="RDS-PROPCONSTRS" Name="TP_Top_drc_synth.rpt"/>
+  <File Type="RDS-RDS" Name="TP_Top.vds"/>
+  <File Type="PA-TCL" Name="TP_Top.tcl"/>
+  <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
+    <Filter Type="Srcs"/>
+    <File Path="$PSRCDIR/sources_1/imports/Source/gesture_detect.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/gesture_detect.v"/>
+        <Attr Name="ImportTime" Val="1512762745"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/serial_send.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/serial_send.v"/>
+        <Attr Name="ImportTime" Val="1512762756"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/image_process.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/image_process.v"/>
+        <Attr Name="ImportTime" Val="1512762748"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/Source/mem_modules.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/Source/FT2232_Data.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/display_8hex.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/display_8hex.v"/>
+        <Attr Name="ImportTime" Val="1510950381"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/debounce.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/debounce.v"/>
+        <Attr Name="ImportTime" Val="1510950385"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/TP_Top.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/send_mouse.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/send_mouse.v"/>
+        <Attr Name="ImportTime" Val="1512762753"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/synchronize.v">
+      <FileInfo>
+        <Attr Name="UserDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/synchronize.v"/>
+        <Attr Name="ImportTime" Val="1510950389"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/Source/labkit_lab4.v">
+      <FileInfo>
+        <Attr Name="UserDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/imports/Source/labkit_lab4.v"/>
+        <Attr Name="ImportTime" Val="1512864244"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="DesignMode" Val="RTL"/>
+      <Option Name="TopModule" Val="TP_Top"/>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+    <Filter Type="Constrs"/>
+    <File Path="$PSRCDIR/constrs_1/imports/Source/Nexys4DDR_Master_lab4.xdc">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/Source/Nexys4DDR_Master_lab4.xdc"/>
+        <Attr Name="ImportTime" Val="1510950184"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2016"/>
+    <Step Id="synth_design"/>
+  </Strategy>
+</GenRun>

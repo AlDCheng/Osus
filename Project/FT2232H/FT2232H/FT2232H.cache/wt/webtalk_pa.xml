@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document>
+<!--The data in this file is primarily intended for consumption by Xilinx tools.
+The structure and the elements are likely to change over the next few releases.
+This means code written to parse this file will need to be revisited each subsequent release.-->
+<application name="pa" timeStamp="Mon Dec 11 17:01:33 2017">
+<section name="Project Information" visible="false">
+<property name="ProjectID" value="695c1bb43ee64c24a0fbb4fad0c4692a" type="ProjectID"/>
+<property name="ProjectIteration" value="355" type="ProjectIteration"/>
+</section>
+<section name="PlanAhead Usage" visible="true">
+<item name="Project Data">
+<property name="SrcSetCount" value="1" type="SrcSetCount"/>
+<property name="ConstraintSetCount" value="1" type="ConstraintSetCount"/>
+<property name="DesignMode" value="RTL" type="DesignMode"/>
+<property name="SynthesisStrategy" value="Vivado Synthesis Defaults" type="SynthesisStrategy"/>
+<property name="ImplStrategy" value="Vivado Implementation Defaults" type="ImplStrategy"/>
+</item>
+<item name="Java Command Handlers">
+<property name="AddCfgMem" value="1" type="JavaHandler"/>
+<property name="AddSources" value="7" type="JavaHandler"/>
+<property name="AutoConnectTarget" value="40" type="JavaHandler"/>
+<property name="CloseProject" value="3" type="JavaHandler"/>
+<property name="CoreView" value="1" type="JavaHandler"/>
+<property name="EditConstraintSets" value="1" type="JavaHandler"/>
+<property name="EditDelete" value="1" type="JavaHandler"/>
+<property name="EditPaste" value="22" type="JavaHandler"/>
+<property name="EditRedo" value="118" type="JavaHandler"/>
+<property name="EditUndo" value="58" type="JavaHandler"/>
+<property name="FileExit" value="2" type="JavaHandler"/>
+<property name="LaunchOpenTarget" value="2" type="JavaHandler"/>
+<property name="LaunchProgramFpga" value="210" type="JavaHandler"/>
+<property name="MoveToDesignSet" value="1" type="JavaHandler"/>
+<property name="MoveToSimSet" value="1" type="JavaHandler"/>
+<property name="NewFile" value="1" type="JavaHandler"/>
+<property name="NewProject" value="4" type="JavaHandler"/>
+<property name="OpenHardwareManager" value="104" type="JavaHandler"/>
+<property name="OpenRecentTarget" value="39" type="JavaHandler"/>
+<property name="OpenSource" value="1" type="JavaHandler"/>
+<property name="OpenTarget" value="3" type="JavaHandler"/>
+<property name="ProgramDevice" value="54" type="JavaHandler"/>
+<property name="ProjectSettingsCmdHandler" value="7" type="JavaHandler"/>
+<property name="ProjectSummary" value="1" type="JavaHandler"/>
+<property name="ResetLayout" value="10" type="JavaHandler"/>
+<property name="RunBitgen" value="196" type="JavaHandler"/>
+<property name="RunImplementation" value="169" type="JavaHandler"/>
+<property name="RunSynthesis" value="221" type="JavaHandler"/>
+<property name="SaveFileProxyHandler" value="13" type="JavaHandler"/>
+<property name="SetSourceEnabled" value="14" type="JavaHandler"/>
+<property name="ShowView" value="53" type="JavaHandler"/>
+<property name="UnselectAllCmdHandler" value="1" type="JavaHandler"/>
+<property name="ViewTaskImplementation" value="5" type="JavaHandler"/>
+<property name="ViewTaskProjectManager" value="2" type="JavaHandler"/>
+<property name="ViewTaskRTLAnalysis" value="1" type="JavaHandler"/>
+<property name="ViewTaskSynthesis" value="2" type="JavaHandler"/>
+</item>
+</section>
+</application>
+</document>

@@ -1,0 +1,256 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: Massachusetts Institute of Technology
+// Engineer: Alan Cheng
+// 
+// Create Date: 11/17/2017 03:39:13 PM
+// Design Name: 
+// Module Name: FT2232_Data
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module FT2232_Data(
+    input clock_60_mhz,
+    input RXF,
+    output WR,
+    output reg RD,
+    output reg OE 
+    );
+
+    reg tmp = 1;
+    
+    always@(posedge clock_60_mhz) begin
+        if(!RXF) begin
+            RD <= OE;
+            OE <= tmp;
+            tmp <= RXF;
+        end
+        else begin
+            RD <= 1'b1;
+            OE <= 1'b1;
+        end
+    end
+        
+    assign WR = 1'b1;               // We never write to PC
+    
+endmodule
+
+module ram_control #(parameter WIDTH=512, HEIGHT=424, LOGSIZE=18,
+                     DEPTH_SIZE=16, BIN_SIZE=1) 
+    (input reset,
+    input clk,
+    input clock_60_mhz,
+    input write_btn,
+    input OE,
+    input RD,
+    input [7:0] data,
+    output reg ready,
+    output reg [(WIDTH*HEIGHT)-1:0] data_out
+//    output reg data_out [(WIDTH*HEIGHT)-1:0]
+    );
+    
+    parameter [1:0] UPDATING = 2'b11;
+    //parameter [1:0] READING = 2'b10;
+    parameter [1:0] WRITING = 2'b01;
+    parameter [1:0] IDLE = 2'b00;
+    
+    reg [1:0] state;
+    reg write;
+    
+    wire [LOGSIZE-1:0] index_bin;
+    wire data_bin;
+    
+    wire wr_bin, ready_wr, new_frame;
+    
+    detect_start detect_new_frame(.reset(reset), .clock_60_mhz(clock_60_mhz), .RD(RD), .data_in(data), .ready(new_frame));
+    
+    background_mem_control #(.WIDTH(WIDTH), .HEIGHT(HEIGHT), .LOGSIZE(LOGSIZE),
+                             .DEPTH_SIZE(DEPTH_SIZE))
+            stream_control(.reset(reset || new_frame), .clk(clk), .clock_60_mhz(clock_60_mhz), .new_data(RD),
+                           .write(write), .data_in(data), .data_bin_wr(data_bin), .WR_bin(wr_bin),
+                           .index(index_bin), .ready(ready_wr));
+    
+//    bram #(.SIZE_W(WIDTH), .SIZE_H(HEIGHT), .LOGSIZE_W(LOGSIZE_W), .LOGSIZE_H(LOGSIZE_H), .BITS(BIN_SIZE))
+//            binary_bram(.addr(d_mem_addr),.clk(clk),.we(wr_bin),.din(data_bin),.dout(mem_out));
+    
+    always@(posedge clk) begin
+        if(reset) begin
+            state <= IDLE;
+            write <= 0;
+            data_out <= 0;
+        end
+        else begin
+            if (state == IDLE) begin
+                if (write_btn)
+                    state <= WRITING;
+                else if (new_frame)
+                    state <= UPDATING;
+            end
+            else if (state == UPDATING) begin
+                write <= 0;
+                
+                if (wr_bin)
+                    data_out[index_bin] <= data_bin;
+                
+                if (ready_wr)
+                    state <= IDLE;
+            end
+            else if (state == WRITING) begin
+                write <= 1;
+                
+                if (ready_wr)
+                    state <= IDLE;
+            end
+        end
+    end
+    
+endmodule
+
+module background_mem_control #(parameter WIDTH=512,        // Depth_image resolution (512x424)
+                                HEIGHT=424,
+                                LOGSIZE=18,
+                                DEPTH_SIZE=16)              // Size of each pixel: 2 bytes = 16 bits
+    (input reset,           // global reset
+    input clk,              // 100 MHz FPGA system clock
+    input clock_60_mhz,     // 60 MHz FT_2232H clock
+    input new_data,         // 1 indicates there is new data to process
+    input write,            // active-high write signal
+    input [7:0] data_in,    // data read from FT2232H
+    output reg data_bin_wr, // data for binary image
+    output reg WR_bin,      // write enable for binary image ram
+    output reg [LOGSIZE-1:0] index,      // index of current pixel
+    output reg ready        // 1 when image frame is done processing
+    );
+    
+    // Determines white area in binary image if within threshold margins
+    parameter BACK_THRESH_MIN = 30;     // mem - 30 = lower bound
+    parameter BACK_THRESH_MAX = 2;      // mem - 2 = upper bound
+    parameter NUM_PIXELS = WIDTH*HEIGHT-1;
+    
+    parameter HI = 1;
+    parameter LO = 0;
+    
+    reg WR;          
+    reg data_state;
+    reg [7:0] prev_data, prev_ram_data, tmp, tmp_ram;
+    
+    wire [15:0] data_back_wr, data_back_mem;
+    wire [7:0] ram_data;
+    
+    // BRAM to store image 
+    bram #(.SIZE(WIDTH*HEIGHT), .LOGSIZE(LOGSIZE), .BITS(DEPTH_SIZE))
+                background_bram(.addr(index),.clk(clk),.we(WR),.din(data_back),.dout(ram_data));
+    
+    // 2 bytes make full distance values
+    assign data_back_wr = {data_in, prev_data};
+    assign data_back_mem = {ram_data, prev_ram_data};
+    
+    always@(posedge clock_60_mhz) begin
+        // reset all regs to 0
+        if (reset) begin
+            WR <= 0;
+            WR_bin <= 0;
+            data_state <= LO;
+            index <= 0;
+            ready <= 0;
+
+            data_bin_wr <= 0;
+
+            prev_data <= 0;
+            prev_ram_data <= 0;
+
+            tmp <= data_in;
+            tmp_ram <= ram_data;
+
+        end
+        
+        // if we have new data to proces...
+        else if (new_data) begin
+            if (data_state == HI) begin     // we have both components of a distance value 
+                // create binary image from thresholds
+                if ((data_back_wr > (data_back_mem - BACK_THRESH_MIN)) &&
+                    (data_back_wr < (data_back_mem - BACK_THRESH_MAX)))
+                    data_bin_wr <= 1;
+                else
+                    data_bin_wr <= 0;
+                
+                // give signal to write to memory
+                if(write == 1)
+                    WR <= 1;
+                else 
+                    WR <= 0;
+                WR_bin <= 1;
+                    
+                // increment index
+                if (index == NUM_PIXELS) begin
+                    ready <= 1;
+                    index <= 0;
+                end
+                else begin
+                    ready <= 0;
+                    index <= index + 1;
+                end
+            end
+            
+            else begin 
+                WR <= 0;
+                WR_bin <= 0;
+                data_state <= HI;
+            end
+            
+            tmp <= data_in;
+            prev_data <= tmp;
+
+            tmp_ram <= ram_data;
+            prev_ram_data <= tmp_ram;
+        end
+    end
+    
+endmodule
+
+module detect_start (
+    input reset,           // global reset
+    input clock_60_mhz,     // 60 MHz FT_2232H clock\
+    input RD,                                                 
+    input [7:0] data_in,    // data read from FT2232H
+    output ready
+    );
+    
+    reg [7:0] data_prev1, data_prev2, data_prev3, data_cur;
+    
+    parameter [7:0] START0 = 8'hAA;
+    parameter [7:0] START1 = 8'hBB;
+    parameter [7:0] START2 = 8'hCC;
+    parameter [7:0] START3 = 8'hDD;
+    
+    always@(posedge clock_60_mhz) begin
+        if(reset) begin
+            data_prev1 <= 0;
+            data_prev2 <= 0;
+            data_prev3 <= 0;
+            data_cur <= 0;
+        end
+        else if(RD) begin
+            data_cur <= data_in;
+            data_prev1 <= data_cur;
+            data_prev2 <= data_prev1;
+            data_prev3 <= data_prev2;
+        end
+    end
+    
+    assign ready = ((data_in == START0) && (data_prev1 == START1)
+                    && (data_prev2 == START2) && (data_prev3 == START3));
+    
+endmodule
+    

@@ -1,0 +1,55 @@
+/afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/test_rom.v {2 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/test_rom.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module test_rom
+** Warning: /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/test_rom.v(7): [RDGN] - Redundant digits in numeric literal.
+
+Top level modules:
+	test_rom
+
+} {} {}} /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/image_process.v {1 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/image_process.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module image_process
+-- Compiling module frame_index_control
+-- Compiling module bram
+-- Compiling module frame_bram
+-- Compiling module clock_quarter_divider
+-- Compiling module vga
+
+Top level modules:
+	image_process
+
+} {} {}} /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/image_process_tf.v {1 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/image_process_tf.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module image_process_tf
+
+Top level modules:
+	image_process_tf
+
+} {} {}} /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/mem_modules.v {1 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/mem_modules.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module bram
+-- Compiling module frame_bram
+
+Top level modules:
+	bram
+	frame_bram
+
+} {} {}} /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/FT2232_Data.v {1 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/FT2232H/FT2232H/Source/FT2232_Data.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module FT2232_Data
+-- Compiling module ram_control
+-- Compiling module background_mem_control
+-- Compiling module detect_start
+
+Top level modules:
+	FT2232_Data
+	ram_control
+
+} {} {}} /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/Image_Store_TB.v {1 {vlog -work work -vopt -nocovercells /afs/athena.mit.edu/user/a/d/adcheng/Documents/6.111/Project/vsim_tests/Image_Store_TB.v
+Model Technology ModelSim SE vlog 6.4a Compiler 2008.08 Aug 28 2008
+-- Compiling module image_store_tb
+
+Top level modules:
+	image_store_tb
+
+} {} {}}
