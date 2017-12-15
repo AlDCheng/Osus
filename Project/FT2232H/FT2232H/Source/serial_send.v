@@ -4,8 +4,8 @@ module serial_send(
      input [7:0] data,       // 8 bit ascii data
      input start_send,       // one clock pulse width, enter pressed, data available
      output reg xmit_data,   // serial data sent to RS232 output driver 
-     output reg xmit_clk,     // baud rate; sent to logic analyzer for debuggin
-     output reg xmit_done
+     output reg xmit_clk,    // baud rate; sent to logic analyzer for debuggin
+     output reg xmit_done    // indicates the transmission of the one byte is finished
      );
 
      // this section sets up the clk;

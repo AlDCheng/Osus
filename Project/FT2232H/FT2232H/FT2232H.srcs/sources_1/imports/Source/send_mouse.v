@@ -1,16 +1,18 @@
+/*
+Assigns the byte to be sent over serial in the correct order for the mouse report.
 
+Author: Hope Harrison
+*/
 module send_mouse( 
-    input [15:0] x, y,
-    input [7:0] is_press, is_release, is_move,
-    input [15:0] top_left_x, top_left_y, bottom_right_x, bottom_right_y,
-    input send_enable,
+    input [15:0] x, y, // coordinates of mouse
+    input [7:0] is_press, is_release, is_move, // type of mouse action
+    input [15:0] top_left_x, top_left_y, bottom_right_x, bottom_right_y, // bounds of screen
+    input send_enable, // whether or not to send to the mouse (should be true only after having processed new data)
     input reset, clock,
-    input touch,
     output [7:0] pmod
     );
     
     reg tx_enable;
-    reg last_touch;
     reg [7:0] data_to_send;
     wire xmit_done;
     wire serial_stream;
@@ -50,7 +52,6 @@ module send_mouse(
     assign pmod[0] = serial_stream;
     
     always @(posedge clock) begin
-        last_touch <= touch;
         case (state)
             WAITING: begin
                 if (send_enable) begin

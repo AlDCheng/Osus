@@ -1,11 +1,15 @@
+/*
+Sends the data input over serial on xmit_data.
 
+Author: Hope Harrison
+*/
 module serial_send(
      input clk,
      input [7:0] data,       // 8 bit ascii data
      input start_send,       // one clock pulse width, enter pressed, data available
      output reg xmit_data,   // serial data sent to RS232 output driver 
      output reg xmit_clk,     // baud rate; sent to logic analyzer for debuggin
-     output reg xmit_done
+     output reg xmit_done    // indicates that transmission of 1 byte is finished
      );
 
      // this section sets up the clk;
@@ -17,7 +21,7 @@ module serial_send(
     parameter WAIT = 0;
     parameter SEND = 1;
     
-    reg [31:0] count; // FIX NUMBER OF BITS - 11 for DIVISOR=868
+    reg [31:0] count;
     reg [9:0] data_buffer;
     reg state;
     reg [3:0] sent_bits;

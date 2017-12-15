@@ -1,9 +1,17 @@
+/*
+Calculates whether a user has pressed or released based on past inputs.
+
+Author: Hope Harrison & Alan Cheng
+*/
+
 module gesture_detect(
         input clock,
-        input [9:0] touch_h, touch_v,
-        input touch, touch_ready,
-        output reg is_press, is_release, is_move, is_scroll,
-        output reg send_mouse_enable);
+        input [9:0] touch_h, touch_v, // coordinates of user's fingertip
+        input touch, // whether the fingertip is touching
+        input touch_ready, // a pulse indicating calculations finished and the touch_h, touch_v, and touch readings are valid
+        output reg is_press, is_release, is_move, is_scroll, // mouse actions
+        output reg send_mouse_enable // whether to send any command to the Teensy in order to control the mouse
+        );
        
     reg touch_active;
     

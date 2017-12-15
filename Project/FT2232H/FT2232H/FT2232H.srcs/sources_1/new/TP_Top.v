@@ -87,8 +87,6 @@ module TP_Top(
     
     wire [7:0] ft_data;
     
-//    assign display_raw = ~SW[13];
-//    assign blank_frame = SW[14];
     assign write_top_left = SW[12];         
     assign write_bottom_right = SW[11];
     
@@ -142,16 +140,14 @@ module TP_Top(
     wire write_top_left, write_bottom_right;
     wire in_blob_box, in_frame_box; // whether the current pixel is on the edge of the box around the blob
     image_process #(.HSIZE(WIDTH),.VSIZE(HEIGHT)) image_process_1
-                   (.clock(CLK100MHZ), .clock_30mhz(clock_30_mhz), .frame_available(img_ready),.display_raw(display_raw), .blank_frame(blank_frame),
-                    .bin_index(index_img_proc),.pixel(pixel_out), .pixel_val(pixel),
+                   (.clock(CLK100MHZ), .clock_30mhz(clock_30_mhz), .frame_available(img_ready),
+                    .bin_index(index_img_proc),.pixel_out(pixel_out), .pixel_in(pixel),
                     .blob_min_size(blob_min_size), .blob_max_size(blob_max_size),
                     .edge_to_ignore_up_h(edge_to_ignore_up_h), .edge_to_ignore_up_v(edge_to_ignore_up_v),
                     .edge_to_ignore_bot_h(edge_to_ignore_bot_h), .edge_to_ignore_bot_v(edge_to_ignore_bot_v),
                     .hsync(hsync),.vsync(vsync),.in_blob_box(in_blob_box),.in_frame_box(in_frame_box),
-                    .write_top_left(write_top_left), .write_bottom_right(write_bottom_right),
                     .touch_h(touch_h),.touch_v(touch_v),.touch(touch),.touch_ready(touch_ready),
                     .top_left_h(top_left_x), .top_left_v(top_left_y), .bottom_right_h(bottom_right_x), .bottom_right_v(bottom_right_y));
-//                    .state_out(JD[3:1]), .erosion_debug(JD[4]), .dilation_debug(JD[5]));
                     
     wire [7:0] pixel_vga;
     assign pixel_vga = SW[10] ? pixel_bin_input : pixel_out;
@@ -169,7 +165,7 @@ module TP_Top(
     // Sends the touch location to the Teensy over serial:
     send_mouse send_mouse1(.x(touch_h), .y(touch_v), .is_press(is_press), .is_release(is_release), .is_move(is_move),
                            .top_left_x(top_left_x), .top_left_y(top_left_y), .bottom_right_x(bottom_right_x), .bottom_right_y(bottom_right_y),
-                           .touch(touch), .reset(BTNU_clean), .clock(CLK100MHZ), .send_enable(send_mouse_enable),
+                           .reset(BTNU_clean), .clock(CLK100MHZ), .send_enable(send_mouse_enable),
                            .pmod(JA));
     
     gesture_detect gesture_1(.clock(CLK100MHZ), .touch_h(touch_h), .touch_v(touch_v), .touch(touch), .touch_ready(touch_ready),

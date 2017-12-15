@@ -1,23 +1,25 @@
+/*
+Processes an image in order to get the coordinates of a fingertip in the image.
+
+Author: Hope Harrison
+*/
+
 module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
         (input clock,
         input reset,
         input clock_30mhz,
         input frame_available, // Indicates that new data is available in frame, should be a pulse
-        input display_raw,
-        input blank_frame,
-        input write_top_left, write_bottom_right,
-        input pixel_val, 
-        input [4:0] blob_min_size, blob_max_size,
-        input [9:0] edge_to_ignore_up_h,
+        input pixel_in, // the current pixel of the binarized image
+        input [4:0] blob_min_size, blob_max_size, // parameters for which sized blobs will be detected as valid
+        input [9:0] edge_to_ignore_up_h, // sets the image area to look for blobs in 
         input [9:0] edge_to_ignore_up_v,
         input [9:0] edge_to_ignore_bot_h,
         input [9:0] edge_to_ignore_bot_v,
-        output [17:0] bin_index,
-        output [7:0] pixel, // current pixel (according to hcount_disp, vcount_disp)
-        output hsync, vsync,
+        output [17:0] bin_index, // the current index to look at in the binarized image (corresponds with pixel_in)
+        output [7:0] pixel_out, // the current pixel of the processed image
+        output hsync, vsync, // signals to send to VGA
         output in_blob_box, in_frame_box, // whether the current pixel is on the edge of the box around the blob
         output [9:0] touch_h, touch_v, // coordinates of user touch
-        output /*reg*/ [9:0] top_left_h, top_left_v, bottom_right_h, bottom_right_v,
         output reg touch, touch_ready // whether there is a valid touch
         );
       
@@ -45,7 +47,6 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
     wire at_display_area;
     wire pixel_on; // whether the current pixel should be on
     reg [9:0] start_h, end_h, start_v, end_v; // the bounds of the box around current blob
-    wire raw; // whether to display raw data
     reg frame [HSIZE-1:0][2:0];
     reg eroded [HSIZE-1:0] [2:0]; // the eroded version of the image
     reg processed [HSIZE-1:0] [VSIZE-1:0]; // the image after it has been eroded then dilated
@@ -53,15 +54,12 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
     reg begin_processing; // is triggered when a new frame comes in
     reg started_blob; // whether we have found a blob yet
     reg [5:0] blob_count; // the number of blobs perviously looked at (that didn't meet criteria)
-//    wire reset;
-//    reg [9:0] image_addr;
-    wire mem_out;
     reg last_frame_available;
     reg new_frame;
+    wire [9:0] top_left_h, top_left_v, bottom_right_h, bottom_right_v;
    
     // Make an hcount and vcount for displaying and also a faster one for cycling through pixels in image processing
     vga #(.HSIZE(HSIZE), .VSIZE(VSIZE)) vga_display(.vga_clock(clock_25mhz),.hcount(hcount_disp),.vcount(vcount_disp),.hsync(hsync),.vsync(vsync),.at_display_area(at_display_area));
-    //vga #(.HSIZE(HSIZE), .VSIZE(VSIZE)) vga_fast(.vga_clock(clock),.hcount(hcount),.vcount(vcount),.hsync(),.vsync(),.at_display_area());
    
     reg wr_erosion;
     wire erosion_pixel;
@@ -98,17 +96,13 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
     frame_bram #(.SIZE(HSIZE*VSIZE), .LOGSIZE(18), .BITS(1'b1))
                 final_bram(.wr_addr(bin_index),.rd_addr(disp_index),.wr_clk(clock),.rd_clk(clock_25mhz),
                             .we(write_final),.rd(1'b1),.din(process_out),.dout(pixel_on));
-//    bram #(.SIZE(HSIZE*VSIZE), .LOGSIZE(18), .BITS(1))
-//                        dilation_bram(.addr(bin_index || process_index),.clk(clock),.we(wr_dilation || wr_blob),.din(process_pixel),.dout(dilation_out));
    
-//    mybram stored_image (.addr(image_addr),.clk(clock),.we(),.din(),.dout(mem_out));
     frame_index_control #(.HSIZE(HSIZE),.VSIZE(VSIZE)) frame_division(.reset(reset || hard_reset), .reset_count(reset_count), .clk(clock), .vcount(vcount), .hcount(hcount));
    
     assign bin_index = (vcount * HSIZE) + hcount;
     assign disp_index = (vcount_disp * HSIZE) + hcount_disp;
    
-    assign erosion_pixel = ~blank_frame &
-                            frame[hcount-1][0] &
+    assign erosion_pixel =  frame[hcount-1][0] &
                             frame[hcount-1][1] &
                             frame[hcount-1][2] &
                             frame[hcount]  [0] &
@@ -141,24 +135,9 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
 
    
     always @(posedge clock) begin
-//        if (reset) begin
-//            state <= 0;
-//            wr_blob <= 0;
-//        end
-       
+    
         last_frame_available <= frame_available;
         new_frame <= (~last_frame_available & frame_available);
-   
-//        if (touch_ready & touch) begin
-//            if (write_top_left) begin
-//                top_left_h <= edge_to_ignore; // touch_h;
-//                top_left_v <= edge_to_ignore; // touch_v;
-//            end
-//            if (write_bottom_right) begin
-//                bottom_right_h <= HSIZE - edge_to_ignore; // touch_h;
-//                bottom_right_v <= VSIZE - edge_to_ignore; //touch_v;
-//            end
-//        end
        
         case (state)
             IDLE: begin
@@ -194,7 +173,7 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
                     reset_count <= 0;
                     wr_erosion <= 0;
                 end
-                frame[hcount][vcount] <= pixel_val;
+                frame[hcount][vcount] <= pixel_in;
             end
             ERODE: begin
                 reset_count <= 0;
@@ -211,7 +190,7 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
                         frame[index][2] <= next_row[index];
                     end
                 end
-                next_row[hcount] <= pixel_val;
+                next_row[hcount] <= pixel_in;
             end
             PREP_DILATE: begin
                 hard_reset <= 0;
@@ -299,11 +278,6 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
             end
         endcase
     end
-   
-//    assign in_blob_box = (hcount_disp == start_h & vcount_disp >= start_v & vcount_disp <= end_v) |
-//                 (hcount_disp == end_h & vcount_disp >= start_v & vcount_disp <= end_v) |
-//                 (vcount_disp == start_v & hcount_disp >= start_h & hcount_disp <= end_h) |
-//                 (vcount_disp == end_v & hcount_disp >= start_h & hcount_disp <= end_h);
 
     assign in_blob_box = (hcount_disp > start_h) & (vcount_disp > start_v) & (hcount_disp < end_h) & (vcount_disp < end_v);    
    
@@ -311,11 +285,8 @@ module image_process #(parameter HSIZE = 512, parameter VSIZE=424)
                                   (hcount_disp == bottom_right_h & vcount_disp >= top_left_v & vcount_disp <= bottom_right_v) |
                                   (vcount_disp == top_left_v & hcount_disp >= top_left_h & hcount_disp <= bottom_right_h) |
                                   (vcount_disp == bottom_right_v & hcount_disp >= top_left_h & hcount_disp <= bottom_right_h);
-                
-    //assign pixel_on = display_raw? (~blank_frame & frame[hcount_disp][vcount_disp]) :
-    //                      (processed[hcount_disp][vcount_disp]);
-               
-    assign pixel = at_display_area? (pixel_on? 255 :0) : 0;
+            
+    assign pixel_out = at_display_area? (pixel_on? 255 :0) : 0;
     assign touch_h = start_h + (end_h - start_h)/2;
     assign touch_v = start_v + (end_v - start_v)/2;
        
